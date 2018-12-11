@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html style="min-width: 700px">
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="https://apps.bdimg.com/libs/bootstrap/3.2.0/css/bootstrap.min.css">
+    <script src="https://cdn.staticfile.org/angular.js/1.4.6/angular.min.js"></script>
+    <style>
+        .container th, .container td{
+            width: 5%;
+        }
+    </style>
+</head>
+<body>
+
+<div ng-app="myApp"  ng-controller="myCtrl" class="container" style="position: relative">
+
+
+    <div style="padding-right: 20px;">
+        <table class="table table-bordered">
+            <caption >
+                武学数据表
+            </caption>
+            <thead>
+
+
+            <tr >
+                <th>武学名称</th>
+                <th>门派</th>
+                <th style="max-width:20px;">准备位置</th>
+                <th>转化率</th>
+                <th>攻击系数</th>
+                <th>攻速系数</th>
+                <th>加力伤害系数</th>
+                <th>命中系数</th>
+                <th>防御系数</th>
+                <th>招架系数</th>
+                <th>闪避系数</th>
+                <th>内力系数</th>
+                <th>气血系数</th>
+            </tr>
+            </thead>
+        </table>
+    </div>
+
+    <div style="overflow: scroll; max-height: 80vh;">
+        <table class="table table-bordered">
+            <tbody >
+            <tr ng-repeat="item in skillArr" >
+                <td>{{item.name}}</td>
+                <td>{{item.familyList}}</td>
+                <td style="max-width:20px;">{{item.methods}}</td>
+                <td>{{item.potEfficiency}}</td>
+                <td>
+                    {{item.atk}}
+                </td>
+                <td>
+                    {{item.atkSpd}}
+                </td>
+                <td>{{item.powerDamRate}}</td>
+                <td>{{item.hitRate}}</td>
+                <td>{{item.def}}</td>
+                <td>
+                    {{item.parry}}
+                </td>
+                <td>
+                    {{item.dodge}}
+                </td>
+                <td>{{item.neili}}</td>
+                <td>{{item.HpRate}}</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <h3>1 拳脚 2 内功 3 轻功 4 招架 5 剑法 6 刀法  7 棍法 8 暗器</h3>
+
+</div>
+
+</body>
+</html>
+
+<script>
+        var app = angular.module('myApp', []);
+        app.controller('myCtrl', function($scope, $http) {
+
+                console.log(111);
+
+                $http({
+                        method: 'GET',
+                        url: 'https://cdn.mkjump.com/fzjh/0.0.1/res/Json/skill.json'
+                }).then(function successCallback(res) {
+                        console.log(res);
+                        $scope.skillArr = res.data;
+                }, function errorCallback(response) {
+                        // 请求失败执行代码
+                });
+        });
+</script>
