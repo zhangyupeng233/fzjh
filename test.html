@@ -92,6 +92,7 @@
     <table class="table">
         <thead>
         <tr>
+            <th>招式名称</th>
             <th>解锁等级</th>
             <th>攻击系数</th>
             <th>伤害系数</th>
@@ -103,6 +104,7 @@
         </thead>
         <tbody>
         <tr ng-repeat="x in wuxueSelected">
+            <td>{{x.action}}</td>
             <td>{{x.lv}}</td>
             <td>{{x.atk}}</td>
             <td>{{x.dam}}</td>
@@ -205,6 +207,9 @@
 
             $scope.wuxueSelected =  [];
             for (var i in fightAttack[id]){
+                var firstStr = fightAttack[id][i].action.indexOf('「');
+                var lastStr = fightAttack[id][i].action.indexOf('」');
+                fightAttack[id][i].action = fightAttack[id][i].action.slice(firstStr+1,lastStr);
                 $scope.wuxueSelected.push(fightAttack[id][i]);
             }
         };
