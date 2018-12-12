@@ -92,7 +92,7 @@
     <table class="table">
         <thead>
         <tr>
-            <th>招式名称</th>
+            <th>招式名称/{{wuxueSelected.length-1}}</th>
             <th>解锁等级</th>
             <th>攻击系数</th>
             <th>伤害系数</th>
@@ -106,8 +106,8 @@
         <tr ng-repeat="x in wuxueSelected">
             <td>{{x.action}}</td>
             <td>{{x.lv}}</td>
-            <td>{{x.atk}}</td>
-            <td>{{x.dam}}</td>
+            <td>{{x.atk | number : 2}}</td>
+            <td>{{x.dam | number : 2}}</td>
             <td>{{x.damageType}}</td>
             <td>{{x.preDuration}}</td>
             <td>{{x.aftDuration}}</td>
@@ -206,12 +206,33 @@
         var selectWuxue = function(name, id){
 
             $scope.wuxueSelected =  [];
+            var totalAtk = 0, totalDam = 0;
             for (var i in fightAttack[id]){
                 var firstStr = fightAttack[id][i].action.indexOf('「');
                 var lastStr = fightAttack[id][i].action.indexOf('」');
-                fightAttack[id][i].action = fightAttack[id][i].action.slice(firstStr+1,lastStr);
+                console.log(typeof  fightAttack[id][i].dam);
+                totalAtk = totalAtk + fightAttack[id][i].atk;
+                if(typeof fightAttack[id][i].dam === 'string' ){
+                    totalDam = totalDam + parseInt(fightAttack[id][i].dam);
+                }else
+                {
+                    totalDam = totalDam + fightAttack[id][i].dam;
+                }
+
+                if(firstStr !== -1 && lastStr !== -1){
+                    fightAttack[id][i].action = fightAttack[id][i].action.slice(firstStr+1,lastStr);
+                }
                 $scope.wuxueSelected.push(fightAttack[id][i]);
             }
+            console.log(totalAtk);
+            var aveAtk = totalAtk/$scope.wuxueSelected.length;
+            var aveDam = totalDam/$scope.wuxueSelected.length;
+            console.log(totalDam);
+            $scope.wuxueSelected.splice(0, 0, {
+                action: '平均值',
+                atk: aveAtk,
+                dam: aveDam
+            })
         };
 
         getSkillJson(0);
