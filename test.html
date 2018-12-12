@@ -8,18 +8,28 @@
         .container th, .container td{
             width: 5%;
         }
+        .btnActive{
+            background-color: #E6E6E6;
+        }
     </style>
 </head>
 <body>
 
 <div ng-app="myApp"  ng-controller="myCtrl" class="container" style="position: relative">
 
-
-    <div style="padding-right: 20px;">
+    <div class="row">
+        <h3 class="col-sm-3">武学数据表</h3>
+        <div class="col-sm-9 btn-group pull-right" style="margin-top: 15px;">
+            <button class="btn btn-default"
+                    ng-repeat="item in wuxueTypeArr"
+                    ng-click="getSkillJson(item.type)"
+                    ng-class="{btnActive: item.type == activeType}">
+                {{item.name}}
+            </button>
+        </div>
+    </div>
+    <div style="padding-right: 17px;">
         <table class="table table-bordered">
-            <caption >
-                武学数据表
-            </caption>
             <thead>
 
 
@@ -27,22 +37,22 @@
                 <th>武学名称</th>
                 <th>门派</th>
                 <th style="max-width:20px;">准备位置</th>
-                <th>转化率</th>
-                <th>攻击系数</th>
-                <th>攻速系数</th>
-                <th>加力伤害系数</th>
-                <th>命中系数</th>
-                <th>防御系数</th>
-                <th>招架系数</th>
-                <th>闪避系数</th>
-                <th>内力系数</th>
-                <th>气血系数</th>
+                <th ng-click="sortSkillArr('potEfficiency')">转化率 <span class="caret" ></span></th>
+                <th ng-click="sortSkillArr('atk')">攻击系数<span class="caret" ></span></th>
+                <th ng-click="sortSkillArr('atkSpd')">攻速系数<span class="caret" ></span></th>
+                <th ng-click="sortSkillArr('powerDamRate')">加力伤害系数<span class="caret" ></span></th>
+                <th ng-click="sortSkillArr('hitRate')">命中系数<span class="caret" ></span></th>
+                <th ng-click="sortSkillArr('def')">防御系数<span class="caret" ></span></th>
+                <th ng-click="sortSkillArr('parry')">招架系数<span class="caret" ></span></th>
+                <th ng-click="sortSkillArr('dodge')">闪避系数<span class="caret" ></span></th>
+                <th ng-click="sortSkillArr('neili')">内力系数<span class="caret" ></span></th>
+                <th ng-click="sortSkillArr('HpRate')">气血系数<span class="caret" ></span></th>
             </tr>
             </thead>
         </table>
     </div>
 
-    <div style="overflow: scroll; max-height: 80vh;">
+    <div style="overflow: scroll; max-height: 80vh; margin-top: -20px;">
         <table class="table table-bordered">
             <tbody >
             <tr ng-repeat="item in skillArr" >
@@ -72,7 +82,8 @@
         </table>
     </div>
 
-    <h3>1 拳脚 2 内功 3 轻功 4 招架 5 剑法 6 刀法  7 棍法 8 暗器</h3>
+    <h3>1 拳脚 2 内功 3 轻功 4 招架 5 剑法 6 刀法  7 棍法 8 暗器 9 鞭法</h3>
+    <!--<button ng-click="sortSkillArr('potEfficiency')">test</button>-->
 
 </div>
 
@@ -80,19 +91,72 @@
 </html>
 
 <script>
-        var app = angular.module('myApp', []);
-        app.controller('myCtrl', function($scope, $http) {
+    var app = angular.module('myApp', []);
+    app.controller('myCtrl', function($scope, $http) {
+        
+        
+        var wuxueTypeArr = [
+            {name: '全部', type: 0},
+            {name: '拳脚', type: 1},
+            {name: '内功', type: 2},
+            {name: '轻功', type: 3},
+            {name: '招架', type: 4},
+            {name: '剑法', type: 5},
+            {name: '刀法', type: 6},
+            {name: '棍法', type: 7},
+            {name: '暗器', type: 8},
+            {name: '鞭法', type: 9},
+        ];
 
-                console.log(111);
-
+        //从小猴服务器获取json信息
+        var getSkillJson = function(type){
                 $http({
-                        method: 'GET',
-                        url: 'https://cdn.mkjump.com/fzjh/0.0.1/res/Json/skill.json'
+                    method: 'GET',
+                    url: 'https://cdn.mkjump.com/fzjh/0.0.1/res/Json/skill.json'
                 }).then(function successCallback(res) {
-                        console.log(res);
-                        $scope.skillArr = res.data;
+                    filterSkillArr(res.data, type)
+
                 }, function errorCallback(response) {
-                        // 请求失败执行代码
+                                // 请求失败执行代码
                 });
-        });
+            };
+
+
+        //根据指定系数排序
+        var sortSkillArr = function(type){
+            $scope.skillArr.sort(function(a,b) {return   b[type] - a[type]});
+        };
+
+        //根据指定类型过滤
+        var filterSkillArr = function( Arr, type){
+
+            $scope.activeType = type;
+            $scope.skillArr = [];
+
+            for (var i in Arr)
+            {
+                if(type=== 0){
+                    $scope.skillArr.push(Arr[i]);
+                }
+                else if (typeof Arr[i].methods === "number"){
+                    if(Arr[i].methods === type){
+                        $scope.skillArr.push(Arr[i]);
+                    }
+                }
+                else{
+                    var index = Arr[i].methods.indexOf(type);
+                    if(index > -1){
+                        $scope.skillArr.push(Arr[i]);
+                    }
+                }
+            }
+        };
+
+        getSkillJson(0);
+
+        $scope.sortSkillArr = sortSkillArr;
+        $scope. wuxueTypeArr =  wuxueTypeArr;
+        $scope.getSkillJson = getSkillJson;
+
+    });
 </script>
