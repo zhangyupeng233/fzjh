@@ -3,7 +3,9 @@
 <head>
     <meta charset="utf-8">
     <link rel="stylesheet" href="https://apps.bdimg.com/libs/bootstrap/3.2.0/css/bootstrap.min.css">
+    <script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js"></script>
     <script src="https://cdn.staticfile.org/angular.js/1.4.6/angular.min.js"></script>
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <style>
         .container th, .container td{
             width: 5%;
@@ -56,7 +58,11 @@
         <table class="table table-bordered">
             <tbody >
             <tr ng-repeat="item in skillArr" >
-                <td>{{item.name}}</td>
+                <td>
+                    <a href=""  ng-click="selectWuxue(item.name, item.id)">
+                        {{item.name}}
+                    </a>
+                </td>
                 <td>{{item.familyList}}</td>
                 <td style="max-width:20px;  word-wrap:break-word; ">{{item.methods}}</td>
                 <td>{{item.potEfficiency}}</td>
@@ -82,12 +88,39 @@
         </table>
     </div>
 
-    <h3>1 拳脚 2 内功 3 轻功 4 招架 5 剑法 6 刀法  7 棍法 8 暗器 9 鞭法</h3>
+    <h3>1 拳脚 2 内功 3 轻功 4 招架 5 剑法 6 刀法  7 棍法 8 暗器 9 鞭法 </h3>
+    <table class="table">
+        <thead>
+        <tr>
+            <th>解锁等级</th>
+            <th>攻击系数</th>
+            <th>伤害系数</th>
+            <th>伤害类型</th>
+            <th>前摇</th>
+            <th>后摇</th>
+            <th>前后摇</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="x in wuxueSelected">
+            <td>{{x.lv}}</td>
+            <td>{{x.atk}}</td>
+            <td>{{x.dam}}</td>
+            <td>{{x.damageType}}</td>
+            <td>{{x.preDuration}}</td>
+            <td>{{x.aftDuration}}</td>
+            <td>{{x.aftDuration + x.preDuration | number : 2}}</td>
+        </tr>
+        </tbody>
+    </table>
     <!--<button ng-click="sortSkillArr('potEfficiency')">test</button>-->
 
 </div>
 
+
+
 </body>
+
 </html>
 
 <script>
@@ -108,6 +141,8 @@
             {name: '鞭法', type: 9},
         ];
 
+        var fightAttack;
+
         //从小猴服务器获取json信息
         var getSkillJson = function(type){
                 $http({
@@ -120,6 +155,20 @@
                                 // 请求失败执行代码
                 });
             };
+
+
+        //获取武学招式信息https://h5.mkjump.com/fzjh/0.113/res/Json/fightAttack.json
+
+        var getFightAttack = function(){
+            $http({
+                method: 'GET',
+                url: 'https://h5.mkjump.com/fzjh/0.113/res/Json/fightAttack.json'
+            }).then(function successCallback(res) {
+                fightAttack = res.data;
+            }, function errorCallback(response) {
+                // 请求失败执行代码
+            });
+        };
 
 
         //根据指定系数排序
@@ -152,10 +201,21 @@
             }
         };
 
-        getSkillJson(0);
+        var selectWuxue = function(name, id){
 
+            $scope.wuxueSelected =  [];
+            for (var i in fightAttack[id]){
+                $scope.wuxueSelected.push(fightAttack[id][i]);
+            }
+        };
+
+        getSkillJson(0);
+        getFightAttack();
+
+        $scope.wuxueSelected = [];
         $scope.sortSkillArr = sortSkillArr;
         $scope. wuxueTypeArr =  wuxueTypeArr;
+        $scope.selectWuxue = selectWuxue;
         $scope.getSkillJson = getSkillJson;
 
     });
