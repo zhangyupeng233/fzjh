@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html style="min-width: 700px">
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="https://apps.bdimg.com/libs/bootstrap/3.2.0/css/bootstrap.min.css">
+    <script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js"></script>
+    <script src="https://cdn.staticfile.org/angular.js/1.4.6/angular.min.js"></script>
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <style>
+        .container th, .container td{
+            width: 5%;
+        }
+        .btnActive{
+            background-color: #E6E6E6;
+        }
+    </style>
+</head>
+<body>
+
+<div ng-app="myApp"  ng-controller="myCtrl" class="container" style="position: relative">
+
+    <div class="row">
+        <h3 class="col-sm-3">经脉数据表</h3>
+    </div>
+    <div style="padding-right: 17px;">
+        <table class="table table-bordered">
+            <thead>
+
+
+            <tr >
+                <th>天赋名称</th>
+                <th>文本描述</th>
+                <th style="max-width:20px;">加成系数</th>
+            </tr>
+            </thead>
+        </table>
+    </div>
+
+    <div style="overflow: scroll; max-height: 80vh; margin-top: -20px;">
+        <table class="table table-bordered">
+            <tbody >
+            <tr ng-repeat="item in jmArr" >
+                <td>
+                    <span>{{item.name}}</span>
+                </td>
+                <td>{{item.text}}</td>
+                <td style="max-width:20px;  word-wrap:break-word; ">{{item.value}}</td>
+
+
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+
+
+    <!--<button ng-click="sortSkillArr('potEfficiency')">test</button>-->
+
+</div>
+
+
+
+</body>
+
+</html>
+
+<script>
+    var app = angular.module('myApp', []);
+    app.controller('myCtrl', function($scope, $http) {
+
+
+
+
+        var jingmaiVer;
+
+        var getVersion = function(){
+            $http({
+                method: 'GET',
+                url: 'https://cdn.mkjump.com/fzjh/manifest.json'
+            }).then(function successCallback(res) {
+                jingmaiVer = res.data["res/Json/merImp.json"];
+                getMerJson();
+            }, function errorCallback(response) {
+                // 请求失败执行代码
+            });
+        };
+
+        //从小猴服务器获取经脉json信息
+        var getMerJson = function(type){
+            $http({
+                method: 'GET',
+                url: "https://cdn.mkjump.com/fzjh/" + jingmaiVer + "/res/Json/merImp.json"
+            }).then(function successCallback(res) {
+                $scope.jmArr = res.data;
+            }, function errorCallback(response) {
+                // 请求失败执行代码
+            });
+        };
+
+
+
+        getVersion();
+
+
+    });
+</script>
