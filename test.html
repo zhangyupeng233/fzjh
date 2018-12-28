@@ -145,11 +145,27 @@
 
         var fightAttack;
 
-        //从小猴服务器获取json信息
+        var fightAttackVer, skillVersion;
+
+        var getVersion = function(){
+            $http({
+                method: 'GET',
+                url: 'https://cdn.mkjump.com/fzjh/manifest.json'
+            }).then(function successCallback(res) {
+                fightAttackVer = res.data["res/Json/fightAttack.json"];
+                skillVersion = res.data["res/Json/skill.json"];
+                getSkillJson(0);
+                getFightAttack()
+            }, function errorCallback(response) {
+                // 请求失败执行代码
+            });
+        };
+
+        //从小猴服务器获取武学json信息
         var getSkillJson = function(type){
                 $http({
                     method: 'GET',
-                    url: 'https://cdn.mkjump.com/fzjh/0.0.1/res/Json/skill.json'
+                    url: "https://cdn.mkjump.com/fzjh/" + skillVersion + "/res/Json/skill.json"
                 }).then(function successCallback(res) {
                     filterSkillArr(res.data, type)
 
@@ -164,7 +180,7 @@
         var getFightAttack = function(){
             $http({
                 method: 'GET',
-                url: 'https://h5.mkjump.com/fzjh/0.113/res/Json/fightAttack.json'
+                url: 'https://h5.mkjump.com/fzjh/' + fightAttackVer + '/res/Json/fightAttack.json'
             }).then(function successCallback(res) {
                 fightAttack = res.data;
             }, function errorCallback(response) {
@@ -235,8 +251,8 @@
             })
         };
 
-        getSkillJson(0);
-        getFightAttack();
+
+        getVersion();
 
         $scope.wuxueSelected = [];
         $scope.sortSkillArr = sortSkillArr;
