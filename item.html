@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html style="min-width: 700px">
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="https://apps.bdimg.com/libs/bootstrap/3.2.0/css/bootstrap.min.css">
+    <script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js"></script>
+    <script src="https://cdn.staticfile.org/angular.js/1.4.6/angular.min.js"></script>
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <style>
+        .container th, .container td{
+            width: 5%;
+        }
+        .btnActive{
+            background-color: #E6E6E6;
+        }
+    </style>
+</head>
+<body>
+
+<div ng-app="myApp"  ng-controller="myCtrl" class="container" style="position: relative">
+
+    <div class="row">
+        <h3 class="col-sm-3">物品数据表</h3>
+        <select ng-model="selectedType" ng-options="x.name  for x in itemTypes"
+                ng-change="getItems(selectedType.name)">
+            <option value="">--请选择--</option>
+        </select>
+    </div>
+    <div style="padding-right: 17px;">
+        <table class="table table-bordered">
+            <thead>
+
+
+            <tr >
+                <th>物品名称</th>
+                <th>物品种类</th>
+                <th>文本描述</th>
+                <th style="max-width:20px;">代码</th>
+                <th style="max-width:20px;">使用描述</th>
+            </tr>
+            </thead>
+        </table>
+    </div>
+
+    <div style="overflow: scroll; max-height: 80vh; margin-top: -20px;">
+        <table class="table table-bordered">
+            <tbody >
+            <tr ng-repeat="item in items" >
+                <td>
+                    <span>{{item.name}}</span>
+                </td>
+                <td>
+                    <span>{{item.type}}</span>
+                </td>
+                <td>{{item.dsc}}</td>
+                <td style="max-width:20px;  word-wrap:break-word; ">{{item.id}}</td>
+                <td style="max-width:20px;  word-wrap:break-word; ">
+                    {{item.userDsc}}
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+
+
+    <!--<button ng-click="sortSkillArr('potEfficiency')">test</button>-->
+
+</div>
+
+
+
+</body>
+
+</html>
+
+<script>
+    var app = angular.module('myApp', []);
+    app.controller('myCtrl', function($scope, $http) {
+
+
+        var itemTypes = [
+            {name: '宝箱'},
+            {name: '合成材料'},
+            {name: '书页'},
+            {name: '秘籍残页'},
+            {name: '任务'},
+            {name: '节日道具'},
+            {name: '书籍'},
+            {name: '消耗品'},
+            {name: '师门任务'},
+            {name: '礼物'},
+            {name: '酒'},
+        ];
+
+
+        var itemVer;
+
+        var getVersion = function(){
+            $http({
+                method: 'GET',
+                url: 'https://cdn.mkjump.com/fzjh/manifest.json'
+            }).then(function successCallback(res) {
+                itemVer = res.data["res/Json/item.json"];
+                getItems();
+            }, function errorCallback(response) {
+                // 请求失败执行代码
+            });
+        };
+
+        //从小猴服务器获取经脉json信息
+        var getItems = function(type){
+            $http({
+                method: 'GET',
+                url: "https://cdn.mkjump.com/fzjh/" + itemVer + "/res/Json/item.json"
+            }).then(function successCallback(res) {
+                $scope.items = [];
+                if(type){
+                    console.log(type);
+                    for (var i in res.data) {
+                        if(res.data[i].type === type){
+                            $scope.items.push(res.data[i]);
+                        }
+                    }
+                    console.log($scope.items)
+                }else{
+                    $scope.items = res.data;
+                }
+            }, function errorCallback(response) {
+                // 请求失败执行代码
+            });
+        };
+
+
+        getVersion();
+
+        $scope.getItems = getItems;
+        $scope.itemTypes = itemTypes;
+    });
+</script>
