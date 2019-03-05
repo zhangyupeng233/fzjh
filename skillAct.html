@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html style="min-width: 700px">
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="https://apps.bdimg.com/libs/bootstrap/3.2.0/css/bootstrap.min.css">
+    <script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js"></script>
+    <script src="https://cdn.staticfile.org/angular.js/1.4.6/angular.min.js"></script>
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <style>
+        .container th, .container td{
+            width: 5%;
+        }
+        .btnActive{
+            background-color: #E6E6E6;
+        }
+    </style>
+</head>
+<body>
+
+<div ng-app="myApp"  ng-controller="myCtrl" class="container" style="position: relative">
+
+    <div class="row">
+        <h3 class="col-sm-3">主动数据表</h3>
+    </div>
+    <div style="">
+        <table class="table table-bordered">
+            <thead>
+
+
+            <tr >
+                <th>主动名称</th>
+                <th>所属武学</th>
+                <th>解锁方式</th>
+                <th>冷却时间</th>
+                <th >准备位置</th>
+                <th >伤害类型</th>
+                <th>技能强度</th>
+                <th>相关参数</th>
+            </tr>
+            </thead>
+        </table>
+    </div>
+
+    <div style=" margin-top: -20px;">
+        <table class="table table-bordered">
+            <tbody >
+            <tr  ng-repeat="item in items">
+                <td>
+                    <span>{{item.name}}</span>
+                </td>
+                <td style="max-width:50px;  word-wrap:break-word; ">
+                    <span>{{item.skillId}}</span>
+                </td>
+                <td>
+                    <span ng-show="item.learnMethod==1">书页解锁</span>
+                    <span ng-show="item.learnMethod==0">自动解锁</span>
+
+                </td>
+                <td>
+                    <span ng-show="item.cd=='cd1'">25-30</span>
+                    <span ng-show="item.cd=='cd2'">16-20</span>
+                    <span ng-show="item.cd=='cd3'">50-60</span>
+                    <span ng-show="item.cd=='cd4'">5</span>
+                    秒
+                </td>
+                <td >
+                    <span ng-show="item.methods==1">拳脚</span>
+                    <span ng-show="item.methods==2">内功</span>
+                    <span ng-show="item.methods==3">轻功</span>
+                    <span ng-show="item.methods==4">招架</span>
+                    <span ng-show="item.methods==5">剑法</span>
+                    <span ng-show="item.methods==6">刀法</span>
+                    <span ng-show="item.methods==7">棍法</span>
+                    <span ng-show="item.methods==8">暗器</span>
+                    <span ng-show="item.methods==9">鞭法</span>
+                    
+                    {{item.methods}}
+                </td>
+                <td >
+                    {{item.yyhw}}
+                </td>
+                <td style="max-width:20px;  word-wrap:break-word; ">
+                    {{item.skillIdpow}}
+                </td>
+                <td>
+                    <span ng-show="item.sxorxy==11">根骨</span>
+                    <span ng-show="item.sxorxy==12">臂力</span>
+                    <span ng-show="item.sxorxy==21">正神</span>
+                    <span ng-show="item.sxorxy==22">负神</span>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+
+
+    <!--<button ng-click="sortSkillArr('potEfficiency')">test</button>-->
+
+</div>
+
+
+
+</body>
+
+</html>
+
+<script>
+    var app = angular.module('myApp', []);
+    app.controller('myCtrl', function($scope, $http) {
+
+
+
+        var skillVer;
+
+        var getVersion = function(){
+            $http({
+                method: 'GET',
+                url: 'https://cdn.mkjump.com/fzjh/manifest.json'
+            }).then(function successCallback(res) {
+                skillVer = res.data["res/Json/skillAct.json"];
+                getItems();
+            }, function errorCallback(response) {
+                // 请求失败执行代码
+            });
+        };
+
+        //从小猴服务器获取经脉json信息
+        var getItems = function(type){
+            $http({
+                method: 'GET',
+                url: "https://cdn.mkjump.com/fzjh/" + skillVer + "/res/Json/skillAct.json"
+            }).then(function successCallback(res) {
+//                console.log(res)
+                $scope.items = res.data;
+            }, function errorCallback(response) {
+                // 请求失败执行代码
+            });
+        };
+
+
+        getVersion();
+
+        $scope.getItems = getItems;
+    });
+</script>
