@@ -78,7 +78,7 @@
 
         <br>
         <h4>返回结果</h4>
-        <div id="result" style="margin-top:10px;width:300px; height: 200px; border: 1px solid lightgray;">
+        <div id="result" style="margin-top:10px;width:300px; height: 200px; border-top: 1px solid lightgray;">
 
         </div>
     </div>
@@ -112,7 +112,7 @@
         var getItemStoreJson = function(type){
             $.ajax({
                 type: "GET",
-                url: "https://cdn.mkjump.com/fzjh/0.0.1/res/Json/itemStore.json",
+                url: "http://cdn.mkjump.com/fzjh/0.120/res/Json/itemEquip.json",
                 success: function(result) {
                     $.extend(items, result)
                 }
@@ -215,8 +215,12 @@
                 success: function(result) {
                     $("#result").text(result);
                     merchantList = JSON.parse(result).data.list;
-                    var n = merchantList.length - 1;
-                    merchantList[0]["name"] = items[merchantList[0].itemId].name;
+                    for(var i=0; i<merchantList.length;i++){
+                        merchantList[i]["name"] = items[merchantList[i].itemId].name;
+                        delete merchantList[i].type;
+                        delete merchantList[i].count;
+
+                    }
                     $("#result").text(JSON.stringify(merchantList));
                 }
             });
