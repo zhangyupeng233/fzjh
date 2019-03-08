@@ -12,16 +12,22 @@
         .btnActive{
             background-color: #E6E6E6;
         }
+        .form-control, .btn{
+            height: 5vh;
+        }
+        *{
+            font-size: 2.3vh!important;
+        }
 
     </style>
 </head>
 <body>
-    <div class="container">
+    <div class="container" style="width: 100%;">
         <h1>测试页面</h1>
         <div>
             <form class="bs-example bs-example-form" role="form">
                 <div class="input-group col-md-4 col-xs-12">
-                    <span class="input-group-addon">区服</span>
+                    <span class="input-group-addon">　区服　</span>
                     <select id="userArea" class="form-control">
                         <option value="4399;4399a;h5">4399</option>
                         <option value="sina;combination;h5">微博</option>
@@ -33,7 +39,7 @@
                 </div>
                 <br>
                 <div class="input-group col-md-4 col-xs-12">
-                    <span class="input-group-addon">ID</span>
+                    <span class="input-group-addon">　ID　</span>
                     <input type="text" class="form-control" id="userId">
                 </div>
                 <br>
@@ -52,7 +58,7 @@
                 <div class="input-group col-md-4 col-xs-12">
                     <input type="text" class="form-control" id="teacherId" placeholder="输入师傅id">
                     <span class="input-group-btn">
-                        <button class="btn btn-default" type="button" onclick="changeTeacher()">拜师</button>
+                        <button class="btn btn-default" type="button" onclick="changeTeacher()">　拜师　</button>
                     </span>
                 </div>
                 <br>
@@ -63,7 +69,7 @@
                     </span>
                 </div>
                 <br>
-                <div class="input-group col-md-4 col-xs-12">
+                <div class="input-group col-md-4 col-xs-12" style="margin-bottom: 20px;">
                     <input type="text" class="form-control" id="merchantItemId" placeholder="粘贴黑商物品id">
                     <span class="input-group-btn">
                         <button class="btn btn-default" type="button" onclick="buyMerchant()">购买黑商</button>
@@ -72,9 +78,9 @@
 
             </form>
         </div>
-        <button class="btn" onclick="startMission()" style="margin:10px 5px;">南阳匪乱</button>
-        <button class="btn" onclick="getYB()" style="margin:10px 5px;">看广告</button>
-        <button class="btn" onclick="getMerchant()" style="margin:10px 5px;">查看黑商</button>
+        <button class="btn btn-primary" onclick="startMission()" style="margin:10px 5px;">南阳匪乱</button>
+        <button class="btn btn-primary" onclick="getYB()" style="margin:10px 5px;">看广告</button>
+        <button class="btn btn-info" onclick="getMerchant()" style="margin:10px 5px;">查看黑商</button>
 
         <br>
         <h4>返回结果</h4>
