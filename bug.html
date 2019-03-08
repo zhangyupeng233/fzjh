@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html style="min-width: 700px">
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="https://apps.bdimg.com/libs/bootstrap/3.2.0/css/bootstrap.min.css">
+    <script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js"></script>
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <style>
+        .container th, .container td{
+            width: 5%;
+        }
+        .btnActive{
+            background-color: #E6E6E6;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>测试页面</h1>
+        <div>
+            <form class="bs-example bs-example-form" role="form">
+                <div class="input-group col-md-4 col-xs-12">
+                    <span class="input-group-addon">区服</span>
+                    <select id="userArea" class="form-control">
+                        <option value="4399;4399a;h5">4399</option>
+                        <option value="sina;combination;h5">微博</option>
+                        <option value="qunhei;combination;h5">群黑</option>
+                        <option value="4177;17k;h5">4177</option>
+                        <option value="wx;wx;h5qq">微信</option>
+                        <option value="wb;wb;h5qq">空间</option>
+                    </select>
+                </div>
+                <br>
+                <div class="input-group col-md-4 col-xs-12">
+                    <span class="input-group-addon">ID</span>
+                    <input type="text" class="form-control" id="userId">
+                </div>
+                <br>
+                <div class="input-group col-md-4 col-xs-12">
+                    <span class="input-group-addon">session</span>
+                    <input type="text" class="form-control" id="userSession">
+                </div>
+                <br>
+                <div class="input-group col-md-4 col-xs-12">
+                    <input type="text" class="form-control" id="skillId" placeholder="输入武功id">
+                    <span class="input-group-btn">
+                        <button class="btn btn-default" type="button" onclick="learnSkill()">学习技能</button>
+                    </span>
+                </div><!-- /input-group -->
+                <br>
+                <div class="input-group col-md-4 col-xs-12">
+                    <input type="text" class="form-control" id="teacherId" placeholder="输入师傅id">
+                    <span class="input-group-btn">
+                        <button class="btn btn-default" type="button" onclick="changeTeacher()">拜师</button>
+                    </span>
+                </div>
+                <br>
+                <div class="input-group col-md-4 col-xs-12">
+                    <input type="text" class="form-control" id="itemId" placeholder="输入物品id">
+                    <span class="input-group-btn">
+                        <button class="btn btn-default" type="button" onclick="getItem()">拾取物品</button>
+                    </span>
+                </div>
+
+            </form>
+        </div>
+        <button class="btn" onclick="startMission()" style="margin:10px 0;">南阳匪乱</button>
+        <br>
+        <button class="btn" onclick="getYB()" style="margin:10px 0;">看广告</button>
+        <br>
+        <h4>返回结果</h4>
+        <div id="result" style="margin-top:10px;width:300px; height: 200px; border: 1px solid lightgray;">
+
+        </div>
+    </div>
+
+
+
+
+
+</body>
+
+</html>
+
+<script>
+        var test = function(){
+            console.log($("#userArea").val().split(';')[0]);
+        };
+
+        var  setHeader = function (request) {
+            request.setRequestHeader('Content-Type', 'text/plain;charset=UTF-8');
+            request.setRequestHeader('userid', $("#userId").val());
+            request.setRequestHeader('channel', $("#userArea").val().split(';')[0]);
+            request.setRequestHeader('session', $("#userSession").val());
+            request.setRequestHeader('Accept', '*/*',);
+            request.setRequestHeader('Accept-Language', 'zh-CN,zh;q=0.9');
+        };
+
+
+        var startMission = function(){
+            $.ajax({
+                type: "POST",
+                url: "https://"+ $("#userArea").val().split(';')[2] +".mkjump.com/" + $("#userArea").val().split(';')[1] +"/api/h5/finish_mission",
+                data: JSON.stringify({"type":3}),
+                beforeSend: function(request) {
+                   setHeader(request);
+                },
+                success: function(result) {
+                    $("#result").text(result);
+                }
+            });
+        };
+
+
+        var getYB = function(){
+            $.ajax({
+                type: "POST",
+                url: "https://"+ $("#userArea").val().split(';')[2] +".mkjump.com/" + $("#userArea").val().split(';')[1] +"/api/h5/share_reward",
+                data: JSON.stringify({"ad":1}),
+                beforeSend: function(request) {
+                    setHeader(request);
+                },
+                success: function(result) {
+                    $("#result").text(result);
+                }
+            });
+        };
+
+        var learnSkill = function(){
+            $.ajax({
+                type: "POST",
+                url: "https://"+ $("#userArea").val().split(';')[2] +".mkjump.com/" + $("#userArea").val().split(';')[1] +"/api/h5/learn_skill",
+                data: JSON.stringify({"level": 10,"skill_id": $("#skillId").val()}),
+                beforeSend: function(request) {
+                    setHeader(request);
+                },
+                success: function(result) {
+                    $("#result").text(result);
+                }
+            });
+        };
+
+        var changeTeacher = function(){
+            $.ajax({
+                type: "POST",
+                url: "https://"+ $("#userArea").val().split(';')[2] +".mkjump.com/" + $("#userArea").val().split(';')[1] +"/api/h5/learn_skill",
+                data: JSON.stringify({"teacher_id": $("#techerId").val()}),
+                beforeSend: function(request) {
+                    setHeader(request);
+                },
+                success: function(result) {
+                    $("#result").text(result);
+                }
+            });
+        };
+
+        var getItem = function(){
+            $.ajax({
+                type: "POST",
+                url: "https://"+ $("#userArea").val().split(';')[2] +".mkjump.com/" + $("#userArea").val().split(';')[1] +"/api/h5/get_item",
+                data: JSON.stringify({"itemId": $("#itemId").val(), "count": 10}),
+                beforeSend: function(request) {
+                    setHeader(request);
+                },
+                success: function(result) {
+                    $("#result").text(result);
+                }
+            });
+        };
+
+
+
+
+
+
+
+</script>
