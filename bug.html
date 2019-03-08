@@ -62,12 +62,20 @@
                         <button class="btn btn-default" type="button" onclick="getItem()">拾取物品</button>
                     </span>
                 </div>
+                <br>
+                <div class="input-group col-md-4 col-xs-12">
+                    <input type="text" class="form-control" id="merchantItemId" placeholder="粘贴黑商物品id">
+                    <span class="input-group-btn">
+                        <button class="btn btn-default" type="button" onclick="buyMerchant()">购买黑商</button>
+                    </span>
+                </div>
 
             </form>
         </div>
-        <button class="btn" onclick="startMission()" style="margin:10px 0;">南阳匪乱</button>
-        <br>
-        <button class="btn" onclick="getYB()" style="margin:10px 0;">看广告</button>
+        <button class="btn" onclick="startMission()" style="margin:10px 5px;">南阳匪乱</button>
+        <button class="btn" onclick="getYB()" style="margin:10px 5px;">看广告</button>
+        <button class="btn" onclick="getMerchant()" style="margin:10px 5px;">查看黑商</button>
+
         <br>
         <h4>返回结果</h4>
         <div id="result" style="margin-top:10px;width:300px; height: 200px; border: 1px solid lightgray;">
@@ -87,6 +95,30 @@
         var test = function(){
             console.log($("#userArea").val().split(';')[0]);
         };
+
+        var merchantList, items;
+
+        var getItemJson = function(type){
+            $.ajax({
+                type: "GET",
+                url: "https://cdn.mkjump.com/fzjh/0.118/res/Json/item.json",
+                success: function(result) {
+                    items = result;
+                    getItemStoreJson()
+                }
+            });
+        };
+
+        var getItemStoreJson = function(type){
+            $.ajax({
+                type: "GET",
+                url: "https://cdn.mkjump.com/fzjh/0.0.1/res/Json/itemStore.json",
+                success: function(result) {
+                    $.extend(items, result)
+                }
+            });
+        };
+        getItemJson();
 
         var  setHeader = function (request) {
             request.setRequestHeader('Content-Type', 'text/plain;charset=UTF-8');
@@ -170,6 +202,44 @@
             });
         };
 
+
+        var getMerchant = function(){
+            $.ajax({
+                type: "POST",
+                url: "https://"+ $("#userArea").val().split(';')[2] +".mkjump.com/" + $("#userArea").val().split(';')[1] +"/api/h5/get_merchant_list",
+                data: JSON.stringify({"merchantId" : "BM", "type" : 1
+                }),
+                beforeSend: function(request) {
+                    setHeader(request);
+                },
+                success: function(result) {
+                    $("#result").text(result);
+                    merchantList = JSON.parse(result).data.list;
+                    var n = merchantList.length - 1;
+                    merchantList[0]["name"] = items[merchantList[0].itemId].name;
+                    $("#result").text(JSON.stringify(merchantList));
+                }
+            });
+        };
+
+        var buyMerchant = function(){
+            $.ajax({
+                type: "POST",
+                url: "https://"+ $("#userArea").val().split(';')[2] +".mkjump.com/" + $("#userArea").val().split(';')[1] +"/api/h5/buy_merchant_item",
+                data: JSON.stringify({
+                    "itemId" : $("#merchantItemId").val(),
+                    "loc" : 1,
+                    "type" : 1,
+                    "merchantId" : "BM"
+                }),
+                beforeSend: function(request) {
+                    setHeader(request);
+                },
+                success: function(result) {
+                    $("#result").text(result);
+                }
+            });
+        };
 
 
 
