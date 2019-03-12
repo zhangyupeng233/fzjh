@@ -17,7 +17,7 @@
             height: 5vh;
         }
         *{
-            font-size: 4.5vw!important;
+            font-size: 18px!important;
         }
 
     </style>
@@ -104,6 +104,16 @@
         };
 
         var merchantList, items;
+        
+        var getApiBase = function(){
+            return $("#userArea").val().split(';')[1]
+        };
+        
+        var getHttpBase = function(){
+            return $("#userArea").val().split(';')[2]
+        };
+        
+       
 
         var getItemJson = function(type){
             $.ajax({
@@ -127,6 +137,9 @@
         };
         getItemJson();
 
+
+
+
         var  setHeader = function (request) {
             request.setRequestHeader('Content-Type', 'text/plain;charset=UTF-8');
             request.setRequestHeader('userid', $("#userId").val());
@@ -136,123 +149,97 @@
             request.setRequestHeader('Accept-Language', 'zh-CN,zh;q=0.9');
         };
 
+        //统一调用的post请求
+        var httpPost = function(cmd, data, callBack){
+            $.ajax({
+                type: "POST",
+                url: "https://"+ getHttpBase() +".mkjump.com/" + getApiBase() +"/api/h5/" + cmd,
+                data: JSON.stringify(data),
+                beforeSend: function(request) {
+                    setHeader(request);
+                },
+                success: function(result) {
+                    $("#result").text(result);
+                    callBack(result);
+                }
+            });
+        };
 
+
+        //南阳任务
         var startMission = function(){
-            $.ajax({
-                type: "POST",
-                url: "https://"+ $("#userArea").val().split(';')[2] +".mkjump.com/" + $("#userArea").val().split(';')[1] +"/api/h5/finish_mission",
-                data: JSON.stringify({"type":3}),
-                beforeSend: function(request) {
-                   setHeader(request);
-                },
-                success: function(result) {
-                    $("#result").text(result);
-                }
-            });
+            var data = {"type":3};
+            httpPost("finish_mission", data, function(){
+
+            })
         };
 
-
+        //看广告
         var getYB = function(){
-            $.ajax({
-                type: "POST",
-                url: "https://"+ $("#userArea").val().split(';')[2] +".mkjump.com/" + $("#userArea").val().split(';')[1] +"/api/h5/share_reward",
-                data: JSON.stringify({"ad":1}),
-                beforeSend: function(request) {
-                    setHeader(request);
-                },
-                success: function(result) {
-                    $("#result").text(result);
-                }
-            });
+            var data = {"ad":1};
+            httpPost("share_reward", data, function(){
+
+            })
         };
 
+        //学习技能
         var learnSkill = function(){
-            $.ajax({
-                type: "POST",
-                url: "https://"+ $("#userArea").val().split(';')[2] +".mkjump.com/" + $("#userArea").val().split(';')[1] +"/api/h5/learn_skill",
-                data: JSON.stringify({"level": 10,"skill_id": $("#skillId").val()}),
-                beforeSend: function(request) {
-                    setHeader(request);
-                },
-                success: function(result) {
-                    $("#result").text(result);
-                }
-            });
+            var data = {"level": 10,"skill_id": $("#skillId").val()};
+            httpPost("learn_skill", data, function(){
+
+            })
+
         };
 
+        //拜师
         var changeTeacher = function(){
-            console.log( $("#teacherId").val());
-            $.ajax({
-                type: "POST",
-                url: "https://"+ $("#userArea").val().split(';')[2] +".mkjump.com/" + $("#userArea").val().split(';')[1] +"/api/h5/baishi",
-                data: JSON.stringify({"teacher_id": $("#teacherId").val()}),
-                beforeSend: function(request) {
-                    setHeader(request);
-                },
-                success: function(result) {
-                    $("#result").text(result);
-                }
-            });
+            var data = {"teacher_id": $("#teacherId").val()};
+            httpPost("baishi", data, function(){
+
+            })
+
         };
 
+        //拾取物品
         var getItem = function(){
-            $.ajax({
-                type: "POST",
-                url: "https://"+ $("#userArea").val().split(';')[2] +".mkjump.com/" + $("#userArea").val().split(';')[1] +"/api/h5/get_item",
-                data: JSON.stringify({"itemId": $("#itemId").val(), "count": 10}),
-                beforeSend: function(request) {
-                    setHeader(request);
-                },
-                success: function(result) {
-                    $("#result").text(result);
-                }
-            });
+            var data = {"itemId": $("#itemId").val(), "count": 10};
+            httpPost("get_item", data, function(){
+
+            })
+
         };
 
 
+        //查看黑商
         var getMerchant = function(){
-            $.ajax({
-                type: "POST",
-                url: "https://"+ $("#userArea").val().split(';')[2] +".mkjump.com/" + $("#userArea").val().split(';')[1] +"/api/h5/get_merchant_list",
-                data: JSON.stringify({"merchantId" : "BM", "type" : 1
-                }),
-                beforeSend: function(request) {
-                    setHeader(request);
-                },
-                success: function(result) {
-                    $("#result").text(result);
-                    merchantList = JSON.parse(result).data.list;
-                    for(var i=0; i<merchantList.length;i++){
-                        merchantList[i]["name"] = items[merchantList[i].itemId].name;
-                        delete merchantList[i].type;
-                        delete merchantList[i].count;
+            var data = {"merchantId" : "BM", "type" : 1};
+            httpPost("get_merchant_list", data, function(result){
+                merchantList = JSON.parse(result).data.list;
+                for(var i=0; i<merchantList.length;i++){
+                    merchantList[i]["name"] = items[merchantList[i].itemId].name;
+                    delete merchantList[i].type;
+                    delete merchantList[i].count;
 
-                    }
-                    $("#result").text(JSON.stringify(merchantList));
                 }
+                $("#result").text(JSON.stringify(merchantList));
             });
+
         };
 
+        //购买黑商
         var buyMerchant = function(){
-            $.ajax({
-                type: "POST",
-                url: "https://"+ $("#userArea").val().split(';')[2] +".mkjump.com/" + $("#userArea").val().split(';')[1] +"/api/h5/buy_merchant_item",
-                data: JSON.stringify({
+
+            var data = {
                     "itemId" : $("#merchantItemId").val(),
                     "loc" : 1,
                     "type" : 1,
                     "merchantId" : "BM"
-                }),
-                beforeSend: function(request) {
-                    setHeader(request);
-                },
-                success: function(result) {
-                    $("#result").text(result);
-                }
+                };
+            httpPost("buy_merchant_item", data, function(result){
+
             });
+
         };
-
-
 
 
 
