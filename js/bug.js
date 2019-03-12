@@ -67,10 +67,23 @@ var httpPost = function(cmd, data, callBack){
 
 var getEncryptedData = function(fbId, rltId){
 
+    var fb_id, rlt_id;
+    if (fbId){
+        fb_id = fbId;
+    }else{
+        fb_id = $("#fbId").val();
+    }
+
+    if (rltId){
+        rlt_id = rltId;
+    }else{
+        rlt_id = $("#rltId").val();
+    }
+
     var data = {
-        rlt_id: $("#rltId").val(),
+        rlt_id: rlt_id,
         userid: $("#userId").val(),
-        fb_id: $("#fbId").val(),
+        fb_id: fb_id,
         session: $("#userSession").val(),
         channel: $("#userArea").val().split(';')[0],
         time: Date.parse(new Date())

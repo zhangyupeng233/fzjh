@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html style="min-width: 700px">
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="https://apps.bdimg.com/libs/bootstrap/3.2.0/css/bootstrap.min.css">
+    <script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js"></script>
+    <script src="https://cdn.staticfile.org/angular.js/1.4.6/angular.min.js"></script>
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <style>
+        .btnActive{
+            background-color: #E6E6E6;
+        }
+        .container th, .container td{
+            width: 5%;
+        }
+    </style>
+</head>
+<body>
+
+<div ng-app="myApp"  ng-controller="myCtrl" class="container" style="position: relative">
+
+    <div class="row">
+        <h3 class="col-sm-3">任务数据表</h3>
+        <div class="input-group col-md-4 col-xs-12">
+            <input type="text" class="form-control" id="fbId" placeholder="输入副本id">
+            <span class="input-group-btn">
+                        <button class="btn btn-default" type="button" ng-click="getResultJson()">刷新</button>
+                    </span>
+        </div>
+    </div>
+    <div style="padding-right: 17px;">
+        <table class="table table-bordered">
+            <thead>
+
+
+            <tr >
+                <th style="max-width:50px;">操作id</th>
+                <th>描述1</th>
+                <th>描述2</th>
+            </tr>
+            </thead>
+        </table>
+    </div>
+
+    <div style="overflow: scroll; max-height: 80vh; margin-top: -20px;">
+        <table class="table table-bordered">
+            <tbody >
+            <tr ng-repeat="item in jmArr" >
+                <td style="max-width:50px;"><span>{{item.id}}</span></td>
+                <td><span>{{item.arg1}}</span></td>
+                <td style="max-width:30%;"><span>{{item.arg2.substring(0,20)}}</span></td>
+
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+
+
+    <!--<button ng-click="sortSkillArr('potEfficiency')">test</button>-->
+
+</div>
+
+
+
+</body>
+
+</html>
+
+<script>
+    var app = angular.module('myApp', []);
+    app.controller('myCtrl', function($scope, $http) {
+
+
+
+
+        var version;
+
+        var getVersion = function(){
+            $http({
+                method: 'GET',
+                url: 'https://cdn.mkjump.com/fzjh/manifest.json'
+            }).then(function successCallback(res) {
+                version = res.data;
+                console
+//                getMerJson();
+            }, function errorCallback(response) {
+                // 请求失败执行代码
+            });
+        };
+
+        //从小猴服务器获取经脉json信息
+        var getResultJson = function(){
+            var fbVersion = version["res/Json/fb_result/fb" + $("#fbId").val() + ".json"];
+            $http({
+                method: 'GET',
+                url: "http://cdn.mkjump.com/fzjh/" + fbVersion + "/res/Json/fb_result/fb" + $("#fbId").val() + ".json"
+            }).then(function successCallback(res) {
+                $scope.jmArr = res.data;
+            }, function errorCallback(response) {
+                // 请求失败执行代码
+            });
+        };
+
+
+
+        getVersion();
+        $scope.getResultJson = getResultJson;
+
+
+    });
+</script>
