@@ -94,7 +94,7 @@
             var fbVersion = version["res/Json/fb_result/fb" + $("#fbId").val() + ".json"];
             $http({
                 method: 'GET',
-                url: "http://cdn.mkjump.com/fzjh/" + fbVersion + "/res/Json/fb_result/fb" + $("#fbId").val() + ".json"
+                url: "https://cdn.mkjump.com/fzjh/" + fbVersion + "/res/Json/fb_result/fb" + $("#fbId").val() + ".json"
             }).then(function successCallback(res) {
                 $scope.jmArr = res.data;
             }, function errorCallback(response) {
