@@ -16,7 +16,7 @@
         .form-control, .btn{
             height: 5vh;
         }
-        *{
+        span, select, button, input{
             font-size: 18px!important;
         }
 
@@ -24,9 +24,8 @@
 </head>
 <body>
     <div class="container" style="width: 100%;">
-        <h1>测试页面</h1>
         <div>
-            <form class="bs-example bs-example-form" role="form">
+            <form class="bs-example bs-example-form" role="form" id="user" style="margin-top: 10px;">
                 <div class="input-group col-md-4 col-xs-12">
                     <span class="input-group-addon">　区服　</span>
                     <select id="userArea" class="form-control">
@@ -49,39 +48,49 @@
                     <input type="text" class="form-control" id="userSession">
                 </div>
                 <br>
-                <div class="input-group col-md-4 col-xs-12">
-                    <input type="text" class="form-control" id="skillId" placeholder="输入武功id">
-                    <span class="input-group-btn">
+            </form>
+            <div class="input-group col-md-4 col-xs-12">
+                <input type="text" class="form-control" id="skillId" placeholder="输入武功id">
+                <span class="input-group-btn">
                         <button class="btn btn-default" type="button" onclick="learnSkill()">学习技能</button>
                     </span>
-                </div><!-- /input-group -->
-                <br>
-                <div class="input-group col-md-4 col-xs-12">
-                    <input type="text" class="form-control" id="teacherId" placeholder="输入师傅id">
-                    <span class="input-group-btn">
+            </div><!-- /input-group -->
+            <br>
+            <div class="input-group col-md-4 col-xs-12">
+                <input type="text" class="form-control" id="teacherId" placeholder="输入师傅id">
+                <span class="input-group-btn">
                         <button class="btn btn-default" type="button" onclick="changeTeacher()">　拜师　</button>
                     </span>
-                </div>
-                <br>
-                <div class="input-group col-md-4 col-xs-12">
-                    <input type="text" class="form-control" id="itemId" placeholder="输入物品id">
-                    <span class="input-group-btn">
+            </div>
+            <br>
+            <div class="input-group col-md-4 col-xs-12">
+                <input type="text" class="form-control" id="itemId" placeholder="输入物品id">
+                <span class="input-group-btn">
                         <button class="btn btn-default" type="button" onclick="getItem()">拾取物品</button>
                     </span>
-                </div>
-                <br>
-                <div class="input-group col-md-4 col-xs-12" style="margin-bottom: 20px;">
-                    <input type="text" class="form-control" id="merchantItemId" placeholder="粘贴黑商物品id">
-                    <span class="input-group-btn">
+            </div>
+            <br>
+            <div class="input-group col-md-4 col-xs-12" style="margin-bottom: 20px;">
+                <input type="text" class="form-control" id="merchantItemId" placeholder="粘贴黑商物品id">
+                <span class="input-group-btn">
                         <button class="btn btn-default" type="button" onclick="buyMerchant()">购买黑商</button>
                     </span>
-                </div>
-
-            </form>
+            </div>
+            <div class="input-group col-md-4 col-xs-12">
+                <span class="input-group-addon">获取次数</span>
+                <input type="number" class="form-control" id="checkNum" max="100">
+            </div>
+            <div class="input-group col-md-4 col-xs-12" style="margin-bottom: 10px;">
+                <input type="text" class="form-control" id="encryptData" placeholder="粘贴密文">
+                <span class="input-group-btn">
+                    <button class="btn btn-default" type="button" onclick="checkRlt()">获取物品</button>
+                </span>
+            </div>
         </div>
-        <button class="btn btn-primary" onclick="startMission()" style="margin:10px 5px;">南阳匪乱</button>
-        <button class="btn btn-primary" onclick="getYB()" style="margin:10px 5px;">看广告</button>
-        <button class="btn btn-info" onclick="getMerchant()" style="margin:10px 5px;">查看黑商</button>
+        <button class="btn btn-primary" onclick="startMission()" style="margin:5px 5px;">南阳</button>
+        <button class="btn btn-primary" onclick="getYB()" style="margin:5px 5px;">广告</button>
+        <button class="btn btn-info" onclick="getMerchant()" style="margin:5px 5px;">黑商</button>
+        <button class="btn btn-info" onclick="getEncryptedData()" style="margin:5px 5px;">测试</button>
 
         <br>
         <h4>返回结果</h4>
@@ -163,6 +172,45 @@
                     callBack(result);
                 }
             });
+        };
+
+
+        var getEncryptedData = function(fbId, rltId){
+
+            var form = new FormData(document.querySelector("form"));
+            form.append("rlt", $("#rltId").val());
+            form.append("fb", $("#fbId").val());
+            form.append("userid", $("#userId").val());
+            form.append("session", $("#userSession").val());
+            form.append("channel", $("#userArea").val().split(';')[0]);
+            //$("#rltId").val()
+            //            $("#fbId").val()
+            $.ajax({
+                type: "POST",
+                url: "http://119.29.38.201/encrypt",
+                data: form,
+                processData : false,
+                // 告诉jQuery不要去设置Content-Type请求头
+                contentType : false,
+                beforeSend: function(request) {
+                    setHeader(request);
+                },
+                success: function(result) {
+                    console.log(result);
+                    checkRlt(result)
+                }
+            });
+        };
+
+
+        var checkRlt = function(){
+            var data = JSON.parse($("#encryptData").val());
+            for(var i=0; i< $("#checkNum").val(); i++){
+                httpPost("check_rlt", data, function(){
+
+                })
+            }
+
         };
 
 
