@@ -65,7 +65,7 @@ var httpPost = function(cmd, data, callBack){
 };
 
 
-var getEncryptedData = function(fbId, rltId){
+var getEncryptedData = function(rltId, fbId){
 
     var fb_id, rlt_id;
     if (fbId){
@@ -101,8 +101,8 @@ var getEncryptedData = function(fbId, rltId){
 };
 
 
-var checkRlt = function(){
-    var data = getEncryptedData();
+var checkRlt = function(rltId, fbId){
+    var data = getEncryptedData(rltId, fbId);
     for(var i=0; i< $("#checkNum").val(); i++){
         httpPost("check_rlt", data, function(){
 
