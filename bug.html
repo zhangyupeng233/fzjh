@@ -21,6 +21,7 @@
         }
 
     </style>
+
 </head>
 <body>
     <div class="container" style="width: 100%;">
@@ -63,13 +64,6 @@
                     </span>
             </div>
             <br>
-            <div class="input-group col-md-4 col-xs-12">
-                <input type="text" class="form-control" id="itemId" placeholder="输入物品id">
-                <span class="input-group-btn">
-                        <button class="btn btn-default" type="button" onclick="getItem()">拾取物品</button>
-                    </span>
-            </div>
-            <br>
             <div class="input-group col-md-4 col-xs-12" style="margin-bottom: 20px;">
                 <input type="text" class="form-control" id="merchantItemId" placeholder="粘贴黑商物品id">
                 <span class="input-group-btn">
@@ -77,20 +71,26 @@
                     </span>
             </div>
             <div class="input-group col-md-4 col-xs-12">
+                <span class="input-group-addon">副本id</span>
+                <input type="text" class="form-control" id="fbId" >
+            </div>
+            <br>
+            <div class="input-group col-md-4 col-xs-12">
+                <span class="input-group-addon">指令id</span>
+                <input type="text" class="form-control" id="rltId" >
+            </div>
+            <br>
+            <div class="input-group col-md-4 col-xs-12">
                 <span class="input-group-addon">获取次数</span>
-                <input type="number" class="form-control" id="checkNum" max="100">
+                <input type="text" class="form-control" id="checkNum" >
             </div>
-            <div class="input-group col-md-4 col-xs-12" style="margin-bottom: 10px;">
-                <input type="text" class="form-control" id="encryptData" placeholder="粘贴密文">
-                <span class="input-group-btn">
-                    <button class="btn btn-default" type="button" onclick="checkRlt()">获取物品</button>
-                </span>
-            </div>
+            <br>
+
         </div>
         <button class="btn btn-primary" onclick="startMission()" style="margin:5px 5px;">南阳</button>
         <button class="btn btn-primary" onclick="getYB()" style="margin:5px 5px;">广告</button>
         <button class="btn btn-info" onclick="getMerchant()" style="margin:5px 5px;">黑商</button>
-        <button class="btn btn-info" onclick="getEncryptedData()" style="margin:5px 5px;">测试</button>
+        <button class="btn btn-info" onclick="checkRlt()" style="margin:5px 5px;">测试</button>
 
         <br>
         <h4>返回结果</h4>
@@ -106,190 +106,32 @@
 </body>
 
 </html>
-
-<script>
-        var test = function(){
-            console.log($("#userArea").val().split(';')[0]);
-        };
-
-        var merchantList, items;
-        
-        var getApiBase = function(){
-            return $("#userArea").val().split(';')[1]
-        };
-        
-        var getHttpBase = function(){
-            return $("#userArea").val().split(';')[2]
-        };
-        
-       
-
-        var getItemJson = function(type){
-            $.ajax({
-                type: "GET",
-                url: "https://cdn.mkjump.com/fzjh/0.118/res/Json/item.json",
-                success: function(result) {
-                    items = result;
-                    getItemStoreJson()
-                }
-            });
-        };
-
-        var getItemStoreJson = function(type){
-            $.ajax({
-                type: "GET",
-                url: "https://cdn.mkjump.com/fzjh/0.120/res/Json/itemEquip.json",
-                success: function(result) {
-                    $.extend(items, result)
-                }
-            });
-        };
-        getItemJson();
+<script src="js/bug.js"></script>
+<script src="js/jsencrypt.js"></script>
+<script type="text/javascript">
 
 
 
-
-        var  setHeader = function (request) {
-            request.setRequestHeader('Content-Type', 'text/plain;charset=UTF-8');
-            request.setRequestHeader('userid', $("#userId").val());
-            request.setRequestHeader('channel', $("#userArea").val().split(';')[0]);
-            request.setRequestHeader('session', $("#userSession").val());
-            request.setRequestHeader('Accept', '*/*');
-            request.setRequestHeader('Accept-Language', 'zh-CN,zh;q=0.9');
-        };
-
-        //统一调用的post请求
-        var httpPost = function(cmd, data, callBack){
-            $.ajax({
-                type: "POST",
-                url: "https://"+ getHttpBase() +".mkjump.com/" + getApiBase() +"/api/h5/" + cmd,
-                data: JSON.stringify(data),
-                beforeSend: function(request) {
-                    setHeader(request);
-                },
-                success: function(result) {
-                    $("#result").text(result);
-                    callBack(result);
-                }
-            });
-        };
-
-
-        var getEncryptedData = function(fbId, rltId){
-
-            var form = new FormData(document.querySelector("form"));
-            form.append("rlt", $("#rltId").val());
-            form.append("fb", $("#fbId").val());
-            form.append("userid", $("#userId").val());
-            form.append("session", $("#userSession").val());
-            form.append("channel", $("#userArea").val().split(';')[0]);
-            //$("#rltId").val()
-            //            $("#fbId").val()
-            $.ajax({
-                type: "POST",
-                url: "http://119.29.38.201/encrypt",
-                data: form,
-                processData : false,
-                // 告诉jQuery不要去设置Content-Type请求头
-                contentType : false,
-                beforeSend: function(request) {
-                    setHeader(request);
-                },
-                success: function(result) {
-                    console.log(result);
-                    checkRlt(result)
-                }
-            });
-        };
-
-
-        var checkRlt = function(){
-            var data = JSON.parse($("#encryptData").val());
-            for(var i=0; i< $("#checkNum").val(); i++){
-                httpPost("check_rlt", data, function(){
-
-                })
-            }
-
-        };
-
-
-        //南阳任务
-        var startMission = function(){
-            var data = {"type":3};
-            httpPost("finish_mission", data, function(){
-
-            })
-        };
-
-        //看广告
-        var getYB = function(){
-            var data = {"ad":1};
-            httpPost("share_reward", data, function(){
-
-            })
-        };
-
-        //学习技能
-        var learnSkill = function(){
-            var data = {"level": 10,"skill_id": $("#skillId").val()};
-            httpPost("learn_skill", data, function(){
-
-            })
-
-        };
-
-        //拜师
-        var changeTeacher = function(){
-            var data = {"teacher_id": $("#teacherId").val()};
-            httpPost("baishi", data, function(){
-
-            })
-
-        };
-
-        //拾取物品
-        var getItem = function(){
-            var data = {"itemId": $("#itemId").val(), "count": 10};
-            httpPost("get_item", data, function(){
-
-            })
-
-        };
-
-
-        //查看黑商
-        var getMerchant = function(){
-            var data = {"merchantId" : "BM", "type" : 1};
-            httpPost("get_merchant_list", data, function(result){
-                merchantList = JSON.parse(result).data.list;
-                for(var i=0; i<merchantList.length;i++){
-                    merchantList[i]["name"] = items[merchantList[i].itemId].name;
-                    delete merchantList[i].type;
-                    delete merchantList[i].count;
-
-                }
-                $("#result").text(JSON.stringify(merchantList));
-            });
-
-        };
-
-        //购买黑商
-        var buyMerchant = function(){
-
+        var test = function () {
+            // 加密前的原文
             var data = {
-                    "itemId" : $("#merchantItemId").val(),
-                    "loc" : 1,
-                    "type" : 1,
-                    "merchantId" : "BM"
-                };
-            httpPost("buy_merchant_item", data, function(result){
+                rlt_id: '1111111111111',
+                userid: '11111111111111',
+                fb_id: '1111111111111111',
+                sesion: '111111111111111',
+                channel: '1111111111111',
+                time: Date.parse(new Date())
+            };
+            console.log(JSON.stringify(data));
+            // 进行RSA加密
+            var encrypt = new JSEncrypt();
+            encrypt.setPublicKey('MFswDQYJKoZIhvcNAQEBBQADSgAwRwJAa4OR+lsJwHqLL/1yODqxNSjLVrkkjsTG\n' +
+              'ktnGIPxtunGHtPz8GYcKen/khFNNiBoN2mFHjvcCT8Oi72OREfsBKQIDAQAB');
 
-            });
-
+            // 超长加密
+            var encrypted = encrypt.encryptLong(JSON.stringify(data));
+            var result = {"data":encrypted};
+            $('#result').text(JSON.stringify(result));
         };
-
-
-
 
 </script>
