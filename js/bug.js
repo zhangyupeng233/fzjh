@@ -18,7 +18,9 @@ var users = [
     //范时进
     '79237',
     //不弱
-    '79159'
+    '79159',
+    //谷虚子
+    '4243'
 ];
 
 var merchantList, items ,interval;;
