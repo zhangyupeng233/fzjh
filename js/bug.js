@@ -10,6 +10,17 @@ var fb = [
     "02", "04","07", "14","15", "20", "22","25", "26", "27", "200"
 ];
 
+var users = [
+    //自用
+    '81317', '36648',
+    //小白
+    '4279', '72460',
+    //范时进
+    '79237',
+    //不弱
+    '79159'
+];
+
 var merchantList, items ,interval;;
 
 var getApiBase = function(){
@@ -20,6 +31,15 @@ var getHttpBase = function(){
     return $("#userArea").val().split(';')[2]
 };
 
+var checkUser = function(){
+    var id = $("#userId").val();
+    console.log(users.indexOf(id));
+    if(users.indexOf(id)>=0){
+        return true
+    }else{
+        return false
+    }
+};
 
 
 var getItemJson = function(type){
@@ -58,6 +78,9 @@ var  setHeader = function (request) {
 
 //统一调用的post请求
 var httpPost = function(cmd, data, callBack){
+    if(!checkUser()){
+        return
+    };
     $.ajax({
         type: "POST",
         url: "https://"+ getHttpBase() +".mkjump.com/" + getApiBase() +"/api/h5/" + cmd,
@@ -109,6 +132,7 @@ var getEncryptedData = function(rltId, fbId){
 
 
 var checkRlt = function(rltId, fbId){
+
     var data = getEncryptedData(rltId, fbId);
     var timesRun = 0;
 
@@ -131,6 +155,7 @@ var clearTimer = function(){
 };
 
 var tzCelue = function(){
+
     for(var i=0; i<tiaozhan.length; i++){
         for(var j=0; j<fb.length; j++){
             var data = getEncryptedData("rlt_tiaozhancelue"+tiaozhan[i], 'fb'+fb[j]);
