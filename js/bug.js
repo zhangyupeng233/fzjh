@@ -1,6 +1,14 @@
-var test = function(){
-    console.log($("#userArea").val().split(';')[0]);
-};
+var tiaozhan = [
+    "950",
+    "450",
+    "1000",
+    "800",
+    "850",
+];
+
+var fb = [
+    "02", "04","07", "14","15", "20", "22","25", "26", "27", "200"
+];
 
 var merchantList, items ,interval;;
 
@@ -122,6 +130,19 @@ var clearTimer = function(){
     console.log('clear')
 };
 
+var tzCelue = function(){
+    for(var i=0; i<tiaozhan.length; i++){
+        for(var j=0; j<fb.length; j++){
+            var data = getEncryptedData("rlt_tiaozhancelue"+tiaozhan[i], 'fb'+fb[j]);
+            httpPost("check_rlt", data, function(result){
+                var ret = JSON.parse(result);
+                if (ret.data && ret.data.length>0){
+                    console.log(ret.data)
+                }
+            })
+        }
+    };
+};
 
 //南阳任务
 var startMission = function(){
