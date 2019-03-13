@@ -51,7 +51,7 @@
                 <td><span>{{item.arg1}}</span></td>
                 <td style="max-width:30%;"><span>{{item.arg2.substring(0,20)}}</span></td>
                 <td style="max-width:30%; text-overflow:ellipsis;overflow:hidden;">
-                    <span >{{item.arg3}}</span>
+                    <span ng-hide="item.arg3.length>20">{{item.arg3}}</span>
                 </td>
 
             </tr>

@@ -88,7 +88,6 @@ var getEncryptedData = function(rltId, fbId){
         channel: $("#userArea").val().split(';')[0],
         time: Date.parse(new Date())
     };
-    console.log(JSON.stringify(data));
     // 进行RSA加密
     var encrypt = new JSEncrypt();
     encrypt.setPublicKey('MFswDQYJKoZIhvcNAQEBBQADSgAwRwJAa4OR+lsJwHqLL/1yODqxNSjLVrkkjsTG\n' +
@@ -103,11 +102,21 @@ var getEncryptedData = function(rltId, fbId){
 
 var checkRlt = function(rltId, fbId){
     var data = getEncryptedData(rltId, fbId);
-    for(var i=0; i< $("#checkNum").val(); i++){
-        httpPost("check_rlt", data, function(){
-
-        })
+    var timesRun = 0;
+    var interval;
+    if(interval){
+        clearInterval(interval);
+        console.log('clear')
     }
+    interval = setInterval(function(){
+        timesRun += 1;
+        if(timesRun == $("#checkNum").val()){
+            clearInterval(interval);
+            $("#result").text("执行完毕");
+        }
+        httpPost("check_rlt", data, function(){})
+    }, 200);
+
 
 };
 
