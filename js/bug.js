@@ -2,7 +2,7 @@ var test = function(){
     console.log($("#userArea").val().split(';')[0]);
 };
 
-var merchantList, items;
+var merchantList, items ,interval;;
 
 var getApiBase = function(){
     return $("#userArea").val().split(';')[1]
@@ -103,21 +103,23 @@ var getEncryptedData = function(rltId, fbId){
 var checkRlt = function(rltId, fbId){
     var data = getEncryptedData(rltId, fbId);
     var timesRun = 0;
-    var interval;
-    if(interval){
-        clearInterval(interval);
-        console.log('clear')
-    }
+
+    clearTimer();
     interval = setInterval(function(){
         timesRun += 1;
+        $("#runTimes").text(timesRun + "/" + $("#checkNum").val());
         if(timesRun == $("#checkNum").val()){
-            clearInterval(interval);
+            window.clearTimeout(interval);
             $("#result").text("执行完毕");
         }
         httpPost("check_rlt", data, function(){})
     }, 200);
 
+    };
 
+var clearTimer = function(){
+    window.clearTimeout(interval);
+    console.log('clear')
 };
 
 
