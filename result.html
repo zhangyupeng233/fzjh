@@ -50,7 +50,9 @@
                 <td style="max-width:50px;"><span>{{item.id}}</span></td>
                 <td><span>{{item.arg1}}</span></td>
                 <td style="max-width:30%;"><span>{{item.arg2.substring(0,20)}}</span></td>
-                <td style="max-width:30%;"><span>{{item.arg3.substring(0,20)}}</span></td>
+                <td style="max-width:30%; text-overflow:ellipsis;overflow:hidden;">
+                    <span >{{item.arg3}}</span>
+                </td>
 
             </tr>
             </tbody>
