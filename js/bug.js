@@ -20,7 +20,8 @@ var users = [
     //不弱
     '79159',
     //谷虚子
-    '4243'
+    '4243','4280',
+    '72457'
 ];
 
 var merchantList, items ,interval;;
@@ -244,4 +245,14 @@ var buyMerchant = function(){
 
     });
 
+};
+
+//使用背包道具
+var useItem = function(){
+    var data = {
+        "id" : $("#merchantItemId").val()
+    };
+    httpPost("use_item", data, function(result){
+
+    });
 };
