@@ -83,6 +83,7 @@ var  setHeader = function (request) {
 //统一调用的post请求
 var httpPost = function(cmd, data, callBack){
     if(!checkUser()){
+        alert('用户不在白名单 请联系作者');
         return
     };
     $.ajax({
