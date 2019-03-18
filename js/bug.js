@@ -18,7 +18,7 @@ var users = [
     //范时进
     '79237','77629',
     //不弱
-    '79159',
+    '79159','53486',
     //谷虚子
     '4243','4280', '72453',
     //斧头
@@ -83,7 +83,7 @@ var  setHeader = function (request) {
 //统一调用的post请求
 var httpPost = function(cmd, data, callBack){
     if(!checkUser()){
-        alert('用户不在白名单 请联系作者');
+        $("#result").text('用户不在白名单 请联系作者');
         return
     };
     $.ajax({
